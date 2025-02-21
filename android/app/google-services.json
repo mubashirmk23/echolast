@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "740616676256",
+    "project_id": "echonote-1943f",
+    "storage_bucket": "echonote-1943f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740616676256:android:974b3019592004031cfac5",
+        "android_client_info": {
+          "package_name": "com.example.echonote_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCL1hZTUUQvezACGHUdHh3PnnnzQZHcL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740616676256:android:f4f48ea1158a091e1cfac5",
+        "android_client_info": {
+          "package_name": "com.example.flutter_echonotes_"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCL1hZTUUQvezACGHUdHh3PnnnzQZHcL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
