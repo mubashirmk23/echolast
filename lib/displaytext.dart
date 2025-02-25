@@ -1,3 +1,5 @@
+// ...existing code...
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:echonote_new/database.dart';
 import 'package:echonote_new/edittext.dart';
@@ -60,48 +62,53 @@ class _DisplayTextState extends State<DisplayText> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "" + (Ds["title"] ?? "N/A"),
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.black,
-                                      
-                                    fontWeight: FontWeight.bold),
-                              ),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "" + (Ds["contents"] ?? "N/A"),
+                                    "" + (Ds["title"] ?? "N/A"),
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 24,
                                         color: Colors.black,
-                                        fontWeight: FontWeight.w700),
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Spacer(),
-                                  GestureDetector(
-                                      onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditTextScreen(
-                                                        title: Ds['title'],
-                                                        content: Ds['contents'],
-                                                        id: Ds["id"])));
-
-                                      },
-                                      child: Icon(Icons.edit,
-                                          color: Colors.black)),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        
+                                  PopupMenuButton<String>(
+                                    onSelected: (value) async {
+                                      if (value == 'edit') {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditTextScreen(
+                                                      title: Ds['title'],
+                                                      content: Ds['contents'],
+                                                      id: Ds["id"])),
+                                        );
+                                      } else if (value == 'delete') {
                                         await DataBase.deleteTextDetails(
                                             Ds["id"]);
-                                          
-                                      },
-                                      child: Icon(Icons.delete,
-                                          color: Colors.black)),
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return {'Edit', 'Delete'}
+                                          .map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice.toLowerCase(),
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                    icon: Icon(Icons.more_vert,
+                                        color: Colors.black),
+                                  ),
                                 ],
+                              ),
+                              Text(
+                                "" + (Ds["contents"] ?? "N/A"),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700),
                               ),
                             ],
                           )),
@@ -109,7 +116,6 @@ class _DisplayTextState extends State<DisplayText> {
                   }));
         });
   }
-
 
   @override
   Widget build(BuildContext context) {

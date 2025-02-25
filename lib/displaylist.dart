@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:echonote_new/database.dart';
 import 'package:echonote_new/editlist.dart';
-
-
 import 'package:flutter/material.dart';
 
 class ListScreen extends StatefulWidget {
@@ -14,6 +12,7 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   Stream<QuerySnapshot>? ListStream;
+
   getontheload() async {
     ListStream = await DataBase.getListDetails();
     setState(() {});
@@ -68,33 +67,21 @@ class _ListScreenState extends State<ListScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            (ds['title'] ?? "N/A"),
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            (ds["content"] != null &&
-                                    ds["content"].isNotEmpty)
-                                ? ds["content"].join(", ")
-                                : "N/A",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black),
-                            overflow: TextOverflow.ellipsis,
-                          ),              
-                           Row(
-                            children: [       
-                              Spacer(),
-                          GestureDetector(                      
-                            onTap: () {
-                              Navigator.push(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                (ds['title'] ?? "N/A"),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              PopupMenuButton<String>(
+                                onSelected: (value) async {
+                                  if (value == 'edit') {
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
@@ -103,19 +90,35 @@ class _ListScreenState extends State<ListScreen> {
                                                 content: List<String>.from(
                                                     ds["content"]),
                                                 id: ds["Id"],
-                                              )));
-                            },
-                            child: Icon(Icons.edit,)),
-                          GestureDetector(
-                            onTap:() {
-                               DataBase.deleteListDetails(ds['Id']);
-                               
-                            },
-                            child: Icon(Icons.delete,)),
-
-
-                         ],),
-                         
+                                              )),
+                                    );
+                                  } else if (value == 'delete') {
+                                    await DataBase.deleteListDetails(ds['Id']);
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) {
+                                  return {'Edit', 'Delete'}
+                                      .map((String choice) {
+                                    return PopupMenuItem<String>(
+                                      value: choice.toLowerCase(),
+                                      child: Text(choice),
+                                    );
+                                  }).toList();
+                                },
+                                icon: Icon(Icons.more_vert, color: Colors.black),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            (ds["content"] != null && ds["content"].isNotEmpty)
+                                ? ds["content"].join(", ")
+                                : "N/A",
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -134,6 +137,3 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 }
-
-
-

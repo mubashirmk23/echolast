@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:echonote_new/database.dart';
 import 'package:echonote_new/edittask.dart';
-
 import 'package:flutter/material.dart';
 
 class DisplayTask extends StatefulWidget {
@@ -61,13 +60,46 @@ class _DisplayTaskState extends State<DisplayTask> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "" + (Ds["title"] ?? "N/A"),
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black
-                                        ,
-                                    fontWeight: FontWeight.bold),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "" + (Ds["title"] ?? "N/A"),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  PopupMenuButton<String>(
+                                    onSelected: (value) async {
+                                      if (value == 'edit') {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditTaskScreen(
+                                                      title: Ds['title'],
+                                                      description: Ds['description'],
+                                                      id: Ds["id"])),
+                                        );
+                                      } else if (value == 'delete') {
+                                        await DataBase.deleteTaskDetails(
+                                            Ds["id"]);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return {'Edit', 'Delete'}
+                                          .map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice.toLowerCase(),
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                    icon: Icon(Icons.more_vert,
+                                        color: Colors.black),
+                                  ),
+                                ],
                               ),
                               Row(
                                 children: [
@@ -79,34 +111,11 @@ class _DisplayTaskState extends State<DisplayTask> {
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Spacer(),
-                                  GestureDetector(
-                                      onTap: () {
-                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditTaskScreen(
-                                                        title: Ds['title'],
-                                                        description: Ds['description'],
-                                                        id: Ds["id"])));
-                                         
-
-                                      },
-                                      child: Icon(Icons.edit,
-                                          color: Colors.black)),
-                                  GestureDetector(
-                                      onTap: () async {
-                                          await DataBase.deleteTaskDetails(
-                                            Ds["id"]);
-                                          
-                                       
-                                      },
-                                      child: Icon(Icons.delete,
-                                          color: Colors.black)),
                                 ],
                               ),
-                              Row(children: [
-                                 Text(
+                              Row(
+                                children: [
+                                  Text(
                                     "" + (Ds["date"] ?? "N/A"),
                                     style: TextStyle(
                                         fontSize: 15,
@@ -114,23 +123,21 @@ class _DisplayTaskState extends State<DisplayTask> {
                                         fontWeight: FontWeight.w700),
                                   ),
                                   Spacer(),
-                                   Text(
+                                  Text(
                                     "" + (Ds["time"] ?? "N/A"),
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,
                                         fontWeight: FontWeight.w700),
                                   ),
-                              
-
-                              ],)
+                                ],
+                              ),
                             ],
                           )),
                     );
                   }));
         });
   }
-
 
   @override
   Widget build(BuildContext context) {
